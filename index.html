@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assistant Vocal Winwin Group - OpenAI TTS</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo-section">
+                    <h1 class="logo">Winwin Group</h1>
+                    <span class="subtitle">Assistant Vocal Intelligent avec OpenAI TTS</span>
+                </div>
+                <div class="status-indicator">
+                    <div class="status-dot" id="statusDot"></div>
+                    <span class="status-text" id="statusText">Initialisation...</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="container main-container">
+        <div class="app-layout">
+            <!-- Chat Area -->
+            <div class="chat-section">
+                <div class="chat-container">
+                    <div class="conversation-area" id="conversationArea">
+                        <div class="welcome-message">
+                            <div class="welcome-icon">
+                                <i class="fas fa-robot"></i>
+                            </div>
+                            <h2>Bonjour ! Je suis votre assistant vocal Winwin Group</h2>
+                            <p>Cliquez sur le microphone pour commencer une conversation vocale avec synthèse OpenAI TTS ou tapez votre message.</p>
+                            <div class="feature-highlight">
+                                <div class="feature-item">
+                                    <i class="fas fa-microphone-alt"></i>
+                                    <span>Reconnaissance vocale</span>
+                                </div>
+                                <div class="feature-item">
+                                    <i class="fas fa-volume-up"></i>
+                                    <span>11 voix OpenAI naturelles</span>
+                                </div>
+                                <div class="feature-item">
+                                    <i class="fas fa-brain"></i>
+                                    <span>Intelligence GPT-4o</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Voice Controls -->
+                <div class="voice-controls">
+                    <div class="audio-visualizer" id="audioVisualizer">
+                        <div class="wave-bar"></div>
+                        <div class="wave-bar"></div>
+                        <div class="wave-bar"></div>
+                        <div class="wave-bar"></div>
+                        <div class="wave-bar"></div>
+                    </div>
+                    
+                    <div class="control-buttons">
+                        <button class="voice-button" id="voiceButton" title="Commencer l'enregistrement vocal">
+                            <i class="fas fa-microphone"></i>
+                        </button>
+                        <button class="text-input-button" id="textInputButton" title="Saisir du texte">
+                            <i class="fas fa-keyboard"></i>
+                        </button>
+                        <button class="clear-chat-button" id="clearChatButton" title="Effacer la conversation">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Text Input Area -->
+                <div class="text-input-area hidden" id="textInputArea">
+                    <div class="input-container">
+                        <textarea class="form-control text-input" id="textInput" placeholder="Tapez votre message ici..." rows="2"></textarea>
+                        <button class="send-button" id="sendButton" title="Envoyer le message">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Panel -->
+            <div class="settings-panel">
+                <div class="settings-header">
+                    <h3><i class="fas fa-cogs"></i> Configuration OpenAI</h3>
+                    <button class="toggle-settings" id="toggleSettings">
+                        <i class="fas fa-chevron-up"></i>
+                    </button>
+                </div>
+
+                <div class="settings-content" id="settingsContent">
+                    <!-- Model Selection -->
+                    <div class="setting-group">
+                        <label class="form-label">
+                            <i class="fas fa-brain"></i> Modèle IA
+                        </label>
+                        <select class="form-control" id="modelSelect">
+                            <option value="gpt-4o-mini">GPT-4o Mini (Recommandé)</option>
+                            <option value="gpt-4o">GPT-4o (Premium)</option>
+                            <option value="gpt-4-turbo">GPT-4 Turbo</option>
+                        </select>
+                    </div>
+
+                    <!-- TTS Model Selection -->
+                    <div class="setting-group">
+                        <label class="form-label">
+                            <i class="fas fa-microchip"></i> Modèle TTS
+                        </label>
+                        <select class="form-control" id="ttsModelSelect">
+                            <option value="tts-1-hd">TTS-1 HD (Haute Qualité)</option>
+                            <option value="tts-1">TTS-1 (Standard)</option>
+                        </select>
+                    </div>
+
+                    <!-- Voice Selection - OpenAI TTS -->
+                    <div class="setting-group">
+                        <label class="form-label">
+                            <i class="fas fa-volume-up"></i> Voix OpenAI TTS
+                        </label>
+                        <select class="form-control" id="voiceSelect">
+                            <!-- Options will be populated by JavaScript -->
+                        </select>
+                        <div class="voice-preview">
+                            <button class="btn btn--sm btn--outline" id="testVoiceButton">
+                                <i class="fas fa-play"></i> Tester la voix
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Temperature -->
+                    <div class="setting-group">
+                        <label class="form-label">
+                            <i class="fas fa-thermometer-half"></i> Créativité
+                            <span class="temperature-value" id="temperatureValue">0.7</span>
+                        </label>
+                        <input type="range" class="temperature-slider" id="temperatureSlider" min="0" max="1" step="0.1" value="0.7">
+                        <div class="temperature-labels">
+                            <span>Précis</span>
+                            <span>Équilibré</span>
+                            <span>Créatif</span>
+                        </div>
+                    </div>
+
+                    <!-- Quick Prompts -->
+                    <div class="setting-group">
+                        <label class="form-label">
+                            <i class="fas fa-bolt"></i> Prompts Rapides
+                        </label>
+                        <div class="quick-prompts" id="quickPrompts">
+                            <button class="quick-prompt-btn" data-prompt="assistant-commercial">
+                                <i class="fas fa-handshake"></i> Commercial
+                            </button>
+                            <button class="quick-prompt-btn" data-prompt="support-technique">
+                                <i class="fas fa-tools"></i> Support
+                            </button>
+                            <button class="quick-prompt-btn" data-prompt="coach-personnel">
+                                <i class="fas fa-user-tie"></i> Coach
+                            </button>
+                            <button class="quick-prompt-btn" data-prompt="consultant-business">
+                                <i class="fas fa-chart-line"></i> Business
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- System Prompt -->
+                    <div class="setting-group">
+                        <label class="form-label">
+                            <i class="fas fa-code"></i> Prompt Système
+                        </label>
+                        <textarea class="form-control system-prompt" id="systemPrompt" rows="4" placeholder="Définissez le comportement de l'assistant..."></textarea>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="setting-actions">
+                        <button class="btn btn--secondary btn--sm" id="exportButton">
+                            <i class="fas fa-download"></i> Exporter
+                        </button>
+                        <button class="btn btn--primary btn--sm" id="saveSettingsButton">
+                            <i class="fas fa-save"></i> Sauvegarder
+                        </button>
+                    </div>
+
+                    <!-- API Status -->
+                    <div class="api-status">
+                        <div class="status-item">
+                            <span class="status-label">OpenAI Chat:</span>
+                            <span class="status-value ready" id="chatApiStatus">Prêt</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-label">OpenAI TTS:</span>
+                            <span class="status-value ready" id="ttsApiStatus">Prêt</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay hidden" id="loadingOverlay">
+        <div class="loading-spinner">
+            <div class="spinner"></div>
+            <p class="loading-text" id="loadingText">Traitement en cours...</p>
+            <div class="loading-details">
+                <div class="loading-step" id="loadingStep">
+                    <i class="fas fa-cog fa-spin"></i>
+                    <span>Initialisation...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="app.js"></script>
+</body>
+</html>
